@@ -391,12 +391,14 @@ def is_hidden(abs_path, abs_root=""):
         return False
 
     if is_file_hidden(abs_path):
+        raise RuntimeError('Is file hidden!')
         return True
 
     if not abs_root:
         abs_root = abs_path.split(os.sep, 1)[0] + os.sep
     inside_root = abs_path[len(abs_root) :]
     if any(part.startswith(".") for part in inside_root.split(os.sep)):
+        raise RuntimeError('Starts with a dot!')
         return True
 
     # check UF_HIDDEN on any location up to root.
@@ -410,8 +412,10 @@ def is_hidden(abs_path, abs_root=""):
             # may fail on Windows junctions
             st = os.lstat(path)
         except OSError:
+            raise RuntimeError('OSError while lstat!')
             return True
         if getattr(st, "st_flags", 0) & UF_HIDDEN:
+            raise RuntimeError('st_flags !')
             return True
         path = os.path.dirname(path)
 
